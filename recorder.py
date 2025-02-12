@@ -4,7 +4,6 @@ import pandas as pd
 import threading
 import time
 import random
-from urllib.request import urlopen
 from PIL import Image, ImageTk
 
 # ---- CONFIG ----
@@ -20,20 +19,6 @@ uid = ""
 
 sentences = ["Hello", "Yes", "No", "Thank you", "I need help", "Goodbye", "Sorry", "Stop", "Come here", "Wait"]
 sentence_index = 0
-
-# Image URLs for each gesture
-image_urls = {
-    "Hello": "https://res.cloudinary.com/spiralyze/image/upload/f_auto,w_auto/BabySignLanguage/DictionaryPages/hello-flash-card-jpg.jpeg/",
-    "Yes": "https://www.lifeprint.com/asl101/pages-signs/y/yes.htm",
-    "No": "https://www.lifeprint.com/asl101/pages-signs/n/no.htm",
-    "Thank you": "https://www.lifeprint.com/asl101/pages-signs/t/thank-you.htm",
-    "I need help": "https://www.lifeprint.com/asl101/pages-signs/h/help.htm",
-    "Goodbye": "https://www.babysignlanguage.com/dictionary/b/bye-bye/?v=7516fd43adaa",
-    "Sorry": "https://www.lifeprint.com/asl101/pages-signs/s/sorry.htm",
-    "Stop": "https://mavink.com/explore/Stop-Sign-Language",
-    "Come here": "https://www.howdoyousign.com/american-sign-language-dictionary/come%20here",
-    "Wait": "https://www.lifeprint.com/asl101/pages-signs/w/wait.htm"
-}
 
 # ---- CSV FILE ----
 CSV_FILE = "gesture_data.csv"
@@ -110,15 +95,12 @@ def set_uid():
 # ---- IMAGE FETCHING ----
 def fetch_image(gesture):
     try:
-        url = image_urls.get(gesture, "")
-        if url:
-            img = Image.open(urlopen(url))
-            img = img.resize((150, 150))
-            img = ImageTk.PhotoImage(img)
-            image_label.config(image=img)
-            image_label.image = img
-        else:
-            image_label.config(text="No Image Found")
+        image_filename = gesture.replace(" ", "").lower() + ".jpeg"
+        img = Image.open(image_filename)
+        img = img.resize((150, 150))
+        img = ImageTk.PhotoImage(img)
+        image_label.config(image=img)
+        image_label.image = img
     except:
         image_label.config(text="No Image Found")
 
